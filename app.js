@@ -25,18 +25,6 @@ app.get('/', (req,res) => {
 app.post("/upload", (req,res) => {
     upload(req,res,err => {
         fs.readFile(`./uploads/${req.file.originalname}`, (err, image) => {
-            if (err) return console.log("This is your error", err);
-            ////old code from tutorial
-            // worker
-            //     .recognize(data, "eng", { tessjs_create_pdf: "1" })
-            //     .progress(progress => {console.log(progress);})
-            //     .then(result => {
-            //         res.send(result.text);
-            //         //res.redirect('/download')
-            //     })
-            //     .finally(() => worker.terminate());
-            
-            ////new code found from docs
             (async () => {
                 const worker = createWorker();
                 await worker.load();
@@ -45,9 +33,7 @@ app.post("/upload", (req,res) => {
                 const { data: { text } } = await worker.recognize(image);
                 console.log(text);
                 const { data } = await worker.getPDF('Tesseract OCR Result');
-                fs.writeFileSync('tesseract-ocr-result.pdf', Buffer.from(data));
-                //TODO - setup download of pdf
-                console.log('Generate PDF: tesseract-ocr-result.pdf');
+                console.log('Generate PDF: tesseract-ocr-result.pdf');  
                 await worker.terminate();
               })();
         });
@@ -62,5 +48,3 @@ app.get('/download', (req,res) => {
 //start up server
 const PORT = 5000 || process.env.PORT;
 app.listen(PORT, () => console.log(`Hey I'm running on port ${PORT}`))
-
-//APP THAT READS TEXT ON A SCREEN TO DISABLED PEOPLE (DYSLEXIC, BLIND, ETC)
