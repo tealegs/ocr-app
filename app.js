@@ -55,7 +55,8 @@ app.post("/upload", (req,res) => {
 });
 
 app.get('/download', (req,res) => {
-    const file = `${__dirname}/tesseract.js-ocr-result.pdf`
+    const file = `${__dirname}/tesseract-ocr-result.pdf`
+    res.download(file);
 })
 
 //start up server
